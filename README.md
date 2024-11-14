@@ -19,7 +19,7 @@ Além disso, você vai precisar de um serviço de e-mail para enviar os relatór
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/cypress_with_email.git
+   git clone https://github.com/GbrlSouza/cypress_with_email.git
    cd cypress_with_email
    ```
 
