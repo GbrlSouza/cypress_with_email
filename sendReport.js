@@ -1,18 +1,54 @@
-const nodemailer = require('nodemailer')
-const fs = require('fs')
+require('dotenv').config()
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
+const { ImapFlow } = require('imapflow')
+const client = new ImapFlow({
+  host: 'imap.gmail.com',
+  port: 993,
+  secure: true,
+  greetingTimeout: 30000,
   auth: {
-    user: 'dev.gbrlsouzal@gmail.com',
-    pass: 'hsqw lpyp yier inxc'
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
   }
 })
 
-const reportPath = path.join(__dirname, 'cypress', 'reports', 'index.html')
-const reportContent = fs.readFileSync(reportPath, 'utf-8');
+const main = async () => {
+  await client.connect()
+
+  let lock = await client.getMailboxLock('INBOX')
+
+  try {
+    let message = await client.fetchOne(client.mailbox.exists, { source: true })
+    console.log(message.source.toString())
+
+    for await (let message of client.fetch('1:*', { envelope: true })) {
+      console.log(`${message.uid}: ${message.envelope.subject}`)
+    }
+  } finally {
+    lock.release()
+  }
+
+  await client.logout()
+}
+
+main().catch(err => console.error(err))
+
+const nodemailer = require('nodemailer')
+const path = require('path')
+const fs = require('fs')
+
+const transporter = nodemailer.createTransport({
+  host: `smtp.gmail.com`,
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
+  },
+})
+
+const reportPath = path.resolve(__dirname, 'cypress/reports/html/index.html')
+const reportContent = fs.readFileSync(reportPath, 'utf-8')
 
 fs.readFile(reportPath, (err, data) => {
   if (err) {
@@ -21,9 +57,9 @@ fs.readFile(reportPath, (err, data) => {
   }
 
   const mailOptions = {
-    from: 'dev.gbrlsouza@gmail.com',
-    to: 'dev.gbrlsouza@gmail.com',
-    subject: 'Relatório de Testes Cypress',
+    from: process.env.EMAIL,
+    to: `gabrielsouza_1909@hotmail.com`,
+    subject: `Relatório de Testes Cypress`,
     html: `<h3>Segue o relatório de testes do Cypress</h3>`,
     attachments: [
       {
