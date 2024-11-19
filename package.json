@@ -19,8 +19,10 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "html-pdf-chrome": "^0.8.4",
+    "html2canvas": "^1.4.1",
     "imapflow": "^1.0.169",
     "nodemailer": "^6.9.16",
+    "pdf-lib": "^1.17.1",
     "puppeteer": "^23.8.0"
   }
 }
