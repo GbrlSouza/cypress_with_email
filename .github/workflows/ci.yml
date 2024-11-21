@@ -5,6 +5,7 @@ on: push
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -114,4 +115,9 @@ jobs:
 
       - name: Run Cypress Tests and Send Report
         run: |
-          node sendReport.js 
+          if [ $? -ne 0 ]; then
+            echo "Testes falharam. Enviando relatório..."
+            node sendReport.js
+          else
+            echo "Todos os testes passaram. Não será enviado relatório."
+          fi
