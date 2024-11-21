@@ -165,7 +165,8 @@ jobs:
       run: npm install
 
     - name: Run Cypress Tests and Send Report
-      run: npm run test
+      run: |
+          node sendReport.js 
 ```
 
 ---
