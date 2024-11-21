@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer')
 const path = require('path')
 const fs = require('fs')
 const { create } = require('html-pdf-chrome')
+const { waitForTick } = require('pdf-lib')
 
 async function ensureDirectoryExists(directoryPath) {
   try {
@@ -25,8 +26,8 @@ async function sendEmailWithAttachment(pdfPath) {
         path: pdfPath,
       },
       {
-        filename: 'video.mp4', 
-        path: videoPath, 
+        filename: 'video.mp4',
+        path: videoPath,
       },
     ],
   }
@@ -42,7 +43,11 @@ async function checkCypressReportForErrors(htmlFilePath) {
     const htmlContent = await fs.promises.readFile(htmlFilePath, 'utf-8')
     return htmlContent.includes('failed')
   } catch (error) {
-    console.error('Erro ao ler o relatório do Cypress:', error)
+    if (error.code === 'ENOENT' || error.code === 'EISDIR') { console.error('Erro ao gerar o PDF: Arquivo HTML não encontrado ou não é um arquivo válido! Possivel teste sem falhas!') }
+    else if (error.message.includes('failed to launch')) { console.error('Erro ao gerar o PDF: Problema ao iniciar o navegador Chrome') }
+    else if (!htmlFilePath || htmlContent.trim() === '') { console.error('Erro ao gerar o PDF: Arquivo HTML vazio ou inválido') }
+    else { console.error('Erro ao gerar o PDF:', error) }
+    
     return false
   }
 }
@@ -60,18 +65,24 @@ async function convertHtmlToPdf(htmlFilePath, outputPdfPath) {
       printOptions: {
         format: 'A4',
         landscape: true,
+        waitFor: 300,
         printBackground: true,
         preferCSSPageSize: true
       },
     }
 
     const pdf = await create(htmlContent, options)
-    
-    setTimeout(async ()=> {
+
+    setTimeout(async () => {
       await pdf.toFile(outputPdfPath)
       console.log('Relatório convertido para PDF com sucesso:', outputPdfPath)
     }, 25000)
-  } catch (error) { console.error('Erro ao gerar o PDF:', error) }
+  } catch (error) {
+    if (error.code === 'ENOENT' || error.code === 'EISDIR') { console.error('Erro ao gerar o PDF: Arquivo HTML não encontrado ou não é um arquivo válido! Possivel teste sem falhas!') }
+    else if (error.message.includes('failed to launch')) { console.error('Erro ao gerar o PDF: Problema ao iniciar o navegador Chrome') }
+    else if (!htmlFilePath || htmlContent.trim() === '') { console.error('Erro ao gerar o PDF: Arquivo HTML vazio ou inválido') }
+    else { console.error('Erro ao gerar o PDF:', error) }
+  }
 }
 
 const transporter = nodemailer.createTransport({

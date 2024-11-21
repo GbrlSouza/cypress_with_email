@@ -20,6 +20,15 @@ module.exports = defineConfig({
 
   e2e: {
     video: true,
-    setupNodeEvents(on, config) { require('cypress-mochawesome-reporter/plugin')(on) },
-  },
+    setupNodeEvents(on, config) {
+      require('cypress-mochawesome-reporter/plugin')(on)
+      
+      on('after:run', (results) => {
+        if (results.totalFailed > 0) {
+          console.log('Um ou mais testes falharam. Gerando relatório...')
+          require('cypress-mochawesome-reporter').generateReport()
+        } else { console.log('Todos os testes passaram. Relatório não será gerado.') }
+      })
+    }
+  }
 })
