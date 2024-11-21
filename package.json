@@ -2,6 +2,7 @@
   "name": "cypress_with_email",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "test": "cypress run && node sendReport.js"
   },
