@@ -1,85 +1,174 @@
-# Cypress With Email
+# Ctpress With Email
 
-Este projeto utiliza o Cypress para realizar testes automatizados e enviar automaticamente os relatórios gerados para um endereço de e-mail após a execução dos testes. O envio é feito através do `nodemailer` e a configuração é feita de forma simples, utilizando o evento `after:run` do Cypress.
+Este repositório contém a configuração de testes automatizados com Cypress, incluindo o envio de relatórios de teste por e-mail com anexos, utilizando Node.js e bibliotecas específicas.
 
-## Tecnologias Utilizadas
+## Índice
 
-- [Cypress](https://www.cypress.io/) - Framework de testes end-to-end.
-- [Nodemailer](https://nodemailer.com/) - Biblioteca para envio de e-mails.
-- [Node.js](https://nodejs.org/) - Ambiente de execução para JavaScript.
+- [Pré-requisitos](#pré-requisitos)
+- [Como clonar o repositório](#como-clonar-o-repositório)
+- [Instalação do Cypress](#instalação-do-cypress)
+- [Funcionamento do `sendReport.js` e `.env`](#funcionamento-do-sendreportjs-e-env)
+- [Relatório de Execução](#relatório-de-execução)
+- [Scripts do repositório](#scripts-do-repositório)
+- [GitHub Actions](#github-actions)
+
+---
 
 ## Pré-requisitos
 
-Antes de começar, você precisa ter o Node.js instalado em sua máquina. Caso não tenha, você pode baixar e instalar a versão mais recente do Node.js [aqui](https://nodejs.org/).
+Certifique-se de ter instalado:
+- Node.js (versão 14 ou superior)
+- NPM (Node Package Manager)
+- Cypress
 
-Além disso, você vai precisar de um serviço de e-mail para enviar os relatórios (por exemplo, Gmail).
+---
 
-## Instalação
+## Como clonar o repositório
 
-1. Clone o repositório:
-
+1. Abra o terminal e execute o seguinte comando para clonar o repositório:
    ```bash
-   git clone https://github.com/GbrlSouza/cypress_with_email.git
-   cd cypress_with_email
+   git clone https://github.com/GbrlSouza/ctpress-with-email.git
    ```
 
-2. Instale as dependências do projeto:
+2. Entre na pasta do projeto:
+   ```bash
+   cd ctpress-with-email
+   ```
 
+---
+
+## Instalação do Cypress
+
+1. Instale as dependências do projeto:
    ```bash
    npm install
    ```
 
-3. Configure o seu serviço de e-mail no arquivo `cypress.config.js`:
-   - Altere as informações de autenticação do `nodemailer` para o seu serviço de e-mail (usuário e senha ou token de autenticação).
-   
-   ```javascript
-   const transporter = nodemailer.createTransport({
-     service: 'gmail',  // Ou outro serviço de e-mail de sua escolha
-     auth: {
-       user: 'seu-email@gmail.com',  // Seu e-mail
-       pass: 'sua-senha',  // Sua senha ou token de autenticação
-     },
-   });
-   ```
-
-## Como Usar
-
-1. Execute os testes do Cypress:
-
+2. Instale o Cypress:
    ```bash
-   npx cypress run
+   npm install cypress --save-dev
    ```
 
-   O Cypress irá rodar os testes e, ao final, o relatório será enviado automaticamente para o e-mail configurado.
+---
 
-2. O e-mail será enviado com o relatório gerado, no formato `.html`, como anexo.
+## Funcionamento do `sendReport.js` e `.env`
 
-## Estrutura do Projeto
+### `sendReport.js`
 
+Este script realiza as seguintes tarefas:
+1. **Verifica erros no relatório do Cypress**: Lê o arquivo HTML gerado pelo Cypress para identificar falhas.
+2. **Converte HTML em PDF**: Caso erros sejam encontrados, converte o relatório HTML em um PDF formatado.
+3. **Envia o relatório por e-mail**: Usa o Nodemailer para enviar o PDF e um vídeo de teste por e-mail.
+
+Bibliotecas necessárias:
+- **dotenv**: Carrega as variáveis de ambiente do arquivo `.env`.
+- **nodemailer**: Envia e-mails.
+- **html-pdf-chrome**: Converte HTML em PDF.
+- **path** e **fs** (nativas do Node.js): Manipulam arquivos e diretórios.
+
+### Configuração do `.env`
+
+Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis:
+```env
+EMAIL=seu-email@gmail.com
+PASSWORD=sua-senha-ou-token
 ```
-cypress_with_email/
-├── cypress/                # Contém os testes automatizados do Cypress
-│   ├── integration/        # Arquivos de testes
-│   └── reports/            # Relatórios gerados pelo Cypress
-├── node_modules/           # Dependências do Node.js
-├── cypress.config.js       # Arquivo de configuração do Cypress
-├── package.json            # Arquivo de configuração do projeto
-└── README.md               # Este arquivo
+
+**Atenção:** Para contas do Gmail, ative a configuração de aplicativos menos seguros ou utilize um token de autenticação.
+
+---
+
+## Relatório de Execução
+
+Ao executar o comando `npm run test`, você verá o seguinte relatório no terminal:
+
+```bash
+> cypress_with_email@1.0.0 test
+> cypress run && node sendReport.js
+
+...
+
+  Tests:        6
+  Passing:      6
+  Failing:      0
+  Pending:      0
+  Skipped:      0
+
+...
+
+Relatório convertido para PDF com sucesso: C:\cypress_with_email\cypress\reports\pdf\relatorio-cypress.pdf
+E-mail enviado com sucesso: 250 2.0.0 OK
 ```
 
-## Personalização
+### Explicação do Relatório:
 
-- Você pode modificar o caminho do relatório HTML no `cypress.config.js` se precisar de um diretório diferente.
-- No arquivo de configuração do e-mail (`nodemailer`), é possível alterar o servidor de e-mail, a autenticação e o conteúdo da mensagem para personalizar a forma como os relatórios serão enviados.
+1. **Execução dos Testes**:
+   - O Cypress executa todos os testes no arquivo `todo.cy.js`.
+   - Mostra o número total de testes executados, quantos passaram e se houve falhas.
 
-## Contribuição
+2. **Geração de Relatórios**:
+   - O relatório JSON gerado pelo Cypress é convertido em um relatório HTML com detalhes dos testes.
+   - O relatório HTML é armazenado em `cypress/reports/html/index.html`.
 
-1. Faça o fork deste repositório.
-2. Crie uma nova branch (`git checkout -b minha-nova-feature`).
-3. Faça as alterações desejadas e commit (`git commit -am 'Adicionando minha nova feature'`).
-4. Envie para o repositório (`git push origin minha-nova-feature`).
-5. Crie uma pull request.
+3. **Conversão para PDF**:
+   - Caso erros sejam encontrados nos testes, o HTML é convertido em um arquivo PDF armazenado em `cypress/reports/pdf/relatorio-cypress.pdf`.
 
-## Licença
+4. **Envio de E-mail**:
+   - O relatório PDF e o vídeo de execução dos testes são enviados para o e-mail configurado no `.env`.
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+---
+
+## Scripts do repositório
+
+O arquivo `package.json` possui o seguinte script para rodar os testes e enviar relatórios automaticamente:
+```json
+"scripts": {
+    "test": "cypress run && node sendReport.js"
+}
+```
+
+### Executar o script manualmente
+
+1. Para rodar os testes e enviar o relatório, utilize:
+   ```bash
+   npm run test
+   ```
+
+---
+
+## GitHub Actions
+
+Este repositório suporta integração contínua com GitHub Actions. Certifique-se de configurar um workflow para rodar os testes com o script acima. Um exemplo de configuração YAML:
+
+```yaml
+name: Run Cypress Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  cypress-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Cypress Tests and Send Report
+      run: npm run test
+```
+
+---
+
+Com isso, o repositório estará pronto para rodar testes automatizados, gerar relatórios e enviar notificações por e-mail!
+```
