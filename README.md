@@ -171,4 +171,3 @@ jobs:
 ---
 
 Com isso, o repositório estará pronto para rodar testes automatizados, gerar relatórios e enviar notificações por e-mail!
-```
