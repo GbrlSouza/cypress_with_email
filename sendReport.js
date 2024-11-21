@@ -9,7 +9,7 @@ const puppeteer = require('puppeteer')
 async function ensureDirectoryExists(directoryPath) {
   try {
     await fs.promises.mkdir(directoryPath, { recursive: true })
-    console.log(`Diretório criado ou já existe: ${directoryPath}`)
+    console.warn(`Diretório criado ou já existe: ${directoryPath}`)
   } catch (error) { console.error('Erro ao criar diretório:', error) }
 }
 
@@ -22,7 +22,7 @@ async function captureScreenshot(url, outputPath) {
     await page.screenshot({ path: outputPath, fullPage: true })
 
     await browser.close()
-    console.log('Screenshot capturada com sucesso:', outputPath)
+    console.debug('Screenshot capturada com sucesso:', outputPath)
   } catch (error) { console.error('Erro ao capturar screenshot:', error) }
 }
 
@@ -51,7 +51,7 @@ async function sendEmailWithAttachment(pdfPath, screenshotPath) {
 
   try {
     const info = await transporter.sendMail(mailOptions)
-    console.log('E-mail enviado com sucesso:', info.response)
+    console.debug('E-mail enviado com sucesso:', info.response)
   } catch (error) { console.error('Erro ao enviar o e-mail:', error) }
 }
 
@@ -75,8 +75,6 @@ async function convertHtmlToPdf(htmlFilePath, outputPdfPath) {
         executablePath: '/usr/bin/google-chrome',
       },
 
-      wait: 2000,
-
       printOptions: {
         format: 'A4',
         landscape: true,
@@ -87,11 +85,11 @@ async function convertHtmlToPdf(htmlFilePath, outputPdfPath) {
 
     const pdf = await create(htmlContent, options)
     await pdf.toFile(outputPdfPath)
-    console.log('Relatório convertido para PDF com sucesso:', outputPdfPath)
+    console.debug('Relatório convertido para PDF com sucesso:', outputPdfPath)
   } catch (error) {
-    if (error.code === 'ENOENT' || error.code === 'EISDIR') { console.error('Erro ao gerar o PDF: Arquivo HTML não encontrado ou não é um arquivo válido! Possível teste sem falhas!') }
-    else if (error.message.includes('failed to launch')) { console.error('Erro ao gerar o PDF: Problema ao iniciar o navegador Chrome') }
-    else if (!htmlFilePath || htmlContent.trim() === '') { console.error('Erro ao gerar o PDF: Arquivo HTML vazio ou inválido') }
+    if (error.code === 'ENOENT' || error.code === 'EISDIR') { console.debug('Erro ao gerar o PDF: Arquivo HTML não encontrado ou não é um arquivo válido! Possível teste sem falhas!') }
+    else if (error.message.includes('failed to launch')) { console.warn('Erro ao gerar o PDF: Problema ao iniciar o navegador Chrome') }
+    else if (!htmlFilePath || htmlContent.trim() === '') { console.warn('Erro ao gerar o PDF: Arquivo HTML vazio ou inválido') }
     else { console.error('Erro ao gerar o PDF:', error) }
   }
 }
@@ -128,5 +126,5 @@ ensureDirectoryExists(pdfDir).then(async () => {
     }
 
     await sendEmailWithAttachment(pdfPath, screenshotPath)
-  } else { console.log('Nenhum erro encontrado nos testes do Cypress. Nenhum e-mail enviado.') }
+  } else { console.info('Nenhum erro encontrado nos testes do Cypress. Nenhum e-mail enviado.') }
 })
