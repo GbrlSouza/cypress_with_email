@@ -111,3 +111,7 @@ jobs:
           else
             echo "Pasta $VIDEO_DIR não encontrada."
           fi
+
+      - name: Run Cypress Tests and Send Report
+        run: |
+          node sendReport.js 
