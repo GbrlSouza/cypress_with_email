@@ -113,7 +113,7 @@ jobs:
             echo "Pasta $VIDEO_DIR não encontrada."
           fi
 
-      - name: Run Cypress Tests and Send Report
+      - name: Run Send Report
         run: |
           if [ $? -ne 0 ]; then
             echo "Testes falharam. Enviando relatório..."

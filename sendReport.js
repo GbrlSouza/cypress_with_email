@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer')
 const path = require('path')
 const fs = require('fs')
 const { create } = require('html-pdf-chrome')
-const { waitForTick } = require('pdf-lib')
+const puppeteer = require('puppeteer')
 
 async function ensureDirectoryExists(directoryPath) {
   try {
@@ -13,7 +13,20 @@ async function ensureDirectoryExists(directoryPath) {
   } catch (error) { console.error('Erro ao criar diretório:', error) }
 }
 
-async function sendEmailWithAttachment(pdfPath) {
+async function captureScreenshot(url, outputPath) {
+  try {
+    const browser = await puppeteer.launch({ headless: true })
+    const page = await browser.newPage()
+
+    await page.goto(`file://${url}`, { waitUntil: 'networkidle2' })
+    await page.screenshot({ path: outputPath, fullPage: true })
+
+    await browser.close()
+    console.log('Screenshot capturada com sucesso:', outputPath)
+  } catch (error) { console.error('Erro ao capturar screenshot:', error) }
+}
+
+async function sendEmailWithAttachment(pdfPath, screenshotPath) {
   const mailOptions = {
     from: process.env.EMAIL,
     to: 'gabrielsouza_1909@hotmail.com',
@@ -29,6 +42,10 @@ async function sendEmailWithAttachment(pdfPath) {
         filename: 'video.mp4',
         path: videoPath,
       },
+      {
+        filename: 'screenshot.png',
+        path: screenshotPath,
+      },
     ],
   }
 
@@ -43,11 +60,7 @@ async function checkCypressReportForErrors(htmlFilePath) {
     const htmlContent = await fs.promises.readFile(htmlFilePath, 'utf-8')
     return htmlContent.includes('failed')
   } catch (error) {
-    if (error.code === 'ENOENT' || error.code === 'EISDIR') { console.error('Erro ao gerar o PDF: Arquivo HTML não encontrado ou não é um arquivo válido! Possivel teste sem falhas!') }
-    else if (error.message.includes('failed to launch')) { console.error('Erro ao gerar o PDF: Problema ao iniciar o navegador Chrome') }
-    else if (!htmlFilePath || htmlContent.trim() === '') { console.error('Erro ao gerar o PDF: Arquivo HTML vazio ou inválido') }
-    else { console.error('Erro ao gerar o PDF:', error) }
-    
+    console.error('Erro ao ler o relatório do Cypress:', error)
     return false
   }
 }
@@ -62,23 +75,21 @@ async function convertHtmlToPdf(htmlFilePath, outputPdfPath) {
         executablePath: '/usr/bin/google-chrome',
       },
 
+      wait: 2000,
+
       printOptions: {
         format: 'A4',
         landscape: true,
-        waitFor: 300,
         printBackground: true,
-        preferCSSPageSize: true
+        preferCSSPageSize: true,
       },
     }
 
     const pdf = await create(htmlContent, options)
-
-    setTimeout(async () => {
-      await pdf.toFile(outputPdfPath)
-      console.log('Relatório convertido para PDF com sucesso:', outputPdfPath)
-    }, 25000)
+    await pdf.toFile(outputPdfPath)
+    console.log('Relatório convertido para PDF com sucesso:', outputPdfPath)
   } catch (error) {
-    if (error.code === 'ENOENT' || error.code === 'EISDIR') { console.error('Erro ao gerar o PDF: Arquivo HTML não encontrado ou não é um arquivo válido! Possivel teste sem falhas!') }
+    if (error.code === 'ENOENT' || error.code === 'EISDIR') { console.error('Erro ao gerar o PDF: Arquivo HTML não encontrado ou não é um arquivo válido! Possível teste sem falhas!') }
     else if (error.message.includes('failed to launch')) { console.error('Erro ao gerar o PDF: Problema ao iniciar o navegador Chrome') }
     else if (!htmlFilePath || htmlContent.trim() === '') { console.error('Erro ao gerar o PDF: Arquivo HTML vazio ou inválido') }
     else { console.error('Erro ao gerar o PDF:', error) }
@@ -102,18 +113,20 @@ const pdfDir = path.join(reportsDir, 'pdf')
 const pdfPath = path.join(pdfDir, 'relatorio-cypress.pdf')
 const videoDir = path.join(reportsDir, 'html/videos')
 const videoPath = path.join(videoDir, 'todo.cy.js.mp4')
+const screenshotPath = path.join(pdfDir, 'relatorio-cypress.png')
 
 ensureDirectoryExists(pdfDir).then(async () => {
   const hasErrors = await checkCypressReportForErrors(reportPath)
 
   if (hasErrors) {
     await convertHtmlToPdf(reportPath, pdfPath)
+    await captureScreenshot(reportPath, screenshotPath)
 
     if (!fs.existsSync(pdfPath)) {
       console.error('Erro: O arquivo PDF não foi gerado corretamente.')
       return
     }
 
-    await sendEmailWithAttachment(pdfPath)
+    await sendEmailWithAttachment(pdfPath, screenshotPath)
   } else { console.log('Nenhum erro encontrado nos testes do Cypress. Nenhum e-mail enviado.') }
 })
