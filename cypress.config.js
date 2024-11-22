@@ -4,9 +4,10 @@ module.exports = defineConfig({
   reporter: 'cypress-multi-reporters',
 
   reporterOptions: {
-    reporterEnabled: 'cypress-mochawesome-reporter, mocha-junit-reporter',
-    
-    mochaJunitReporterReporterOptions: { mochaFile: 'cypress/reports/junit/results-[hash].xml' },
+    reporterEnabled: 'cypress-mochawesome-reporter',
+
+    // reporterEnabled: 'cypress-mochawesome-reporter, mocha-junit-reporter',
+    // mochaJunitReporterReporterOptions: { mochaFile: 'cypress/reports/junit/results-[hash].xml' },
 
     cypressMochawesomeReporterReporterOptions: {
       charts: true,
