@@ -59,17 +59,22 @@ Certifique-se de ter instalado:
    npm install dotenv
    ```
 
-2. Biblioteca multi-reporters
+2. Biblioteca 
+   ```bashs
+   npm install nodemailer
+   ```
+   
+3. Biblioteca multi-reporters
    ```bash
    npm install --save-dev cypress-multi-reporters
    ```
    
-3. Biblioteca mochawesome-reporter
+4. Biblioteca mochawesome-reporter
    ```bash
    npm install --save-dev cypress-mochawesome-reporter
    ```
 
-4. Biblioteca mocha-junit-reporter
+5. Biblioteca mocha-junit-reporter
    ```bash
    npm install --save-dev mocha-junit-reporter
    ```
