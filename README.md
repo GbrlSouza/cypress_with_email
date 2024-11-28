@@ -27,12 +27,12 @@ Certifique-se de ter instalado:
 
 1. Abra o terminal e execute o seguinte comando para clonar o repositório:
    ```bash
-   git clone https://github.com/GbrlSouza/ctpress-with-email.git
+   git clone https://github.com/GbrlSouza/cypress-with-email.git
    ```
 
 2. Entre na pasta do projeto:
    ```bash
-   cd ctpress-with-email
+   cd cypress-with-email
    ```
 
 ---
@@ -51,7 +51,7 @@ Certifique-se de ter instalado:
 
 ---
 
-## instalação das bibliotecas
+## Instalação das bibliotecas
 
 1. Biblioteca multi-reporters
    ```bash
