@@ -54,17 +54,22 @@ Certifique-se de ter instalado:
 
 ## Instalação das bibliotecas
 
-1. Biblioteca multi-reporters
+1. Biblioteca dotenv
+   ```bash
+   npm install dotenv
+   ```
+
+2. Biblioteca multi-reporters
    ```bash
    npm install --save-dev cypress-multi-reporters
    ```
    
-2. Biblioteca mochawesome-reporter
+3. Biblioteca mochawesome-reporter
    ```bash
    npm install --save-dev cypress-mochawesome-reporter
    ```
 
-3. Biblioteca mocha-junit-reporter
+4. Biblioteca mocha-junit-reporter
    ```bash
    npm install --save-dev mocha-junit-reporter
    ```
