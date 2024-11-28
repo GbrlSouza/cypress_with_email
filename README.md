@@ -59,7 +59,7 @@ Certifique-se de ter instalado:
    npm install dotenv
    ```
 
-2. Biblioteca 
+2. Biblioteca nodemailer 
    ```bashs
    npm install nodemailer
    ```
