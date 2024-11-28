@@ -1,4 +1,4 @@
-# Ctpress With Email
+# Cypress With Email
 
 Este repositório contém a configuração de testes automatizados com Cypress, incluindo o envio de relatórios de teste por e-mail com anexos, utilizando Node.js e bibliotecas específicas.
 
@@ -47,6 +47,25 @@ Certifique-se de ter instalado:
 2. Instale o Cypress:
    ```bash
    npm install cypress --save-dev
+   ```
+
+---
+
+## instalação das bibliotecas
+
+1. Biblioteca multi-reporters
+   ```bash
+   npm install --save-dev cypress-multi-reporters
+   ```
+   
+2. Biblioteca mochawesome-reporter
+   ```bash
+   npm install --save-dev cypress-mochawesome-reporter
+   ```
+
+3. Biblioteca mocha-junit-reporter
+   ```bash
+   npm install --save-dev mocha-junit-reporter
    ```
 
 ---
