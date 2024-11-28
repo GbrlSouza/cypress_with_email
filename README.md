@@ -69,17 +69,22 @@ Certifique-se de ter instalado:
    npm install html-pdf-chrome
    ```
    
-4. Biblioteca multi-reporters
+4. Biblioteca puppeteer
+   ```bash
+   npm install puppeteer --save
+   ```
+   
+5. Biblioteca multi-reporters
    ```bash
    npm install --save-dev cypress-multi-reporters
    ```
    
-5. Biblioteca mochawesome-reporter
+6. Biblioteca mochawesome-reporter
    ```bash
    npm install --save-dev cypress-mochawesome-reporter
    ```
 
-6. Biblioteca mocha-junit-reporter
+7. Biblioteca mocha-junit-reporter
    ```bash
    npm install --save-dev mocha-junit-reporter
    ```
