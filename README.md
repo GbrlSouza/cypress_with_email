@@ -7,7 +7,7 @@ Este repositório contém a configuração de testes automatizados com Cypress, 
 - [Pré-requisitos](#pré-requisitos)
 - [Como clonar o repositório](#como-clonar-o-repositório)
 - [Instalação do Cypress](#instalação-do-cypress)
-- [Instalação das bibliotecas](#instalacao-das-bibliotecas)
+- [Instalação das bibliotecas](#instalação-das-bibliotecas)
 - [Funcionamento do `sendReport.js` e `.env`](#funcionamento-do-sendreportjs-e-env)
 - [Relatório de Execução](#relatório-de-execução)
 - [Scripts do repositório](#scripts-do-repositório)
