@@ -91,6 +91,15 @@ Certifique-se de ter instalado:
 
 ---
 
+## Caso de erro na instalação
+
+   - reforce a instalação com esse comando
+   ```bash
+   npm audit fix
+   ```
+
+---
+
 ## Funcionamento do `sendReport.js` e `.env`
 
 ### `sendReport.js`
