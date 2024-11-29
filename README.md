@@ -119,10 +119,10 @@ Bibliotecas necessárias:
 ### Configuração do `.env`
 
 Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis:
-```env
-EMAIL=seu-email@gmail.com
-PASSWORD=sua-senha-ou-token
-```
+   ```env
+   EMAIL=seu-email@gmail.com
+   PASSWORD=sua-senha-ou-token
+   ```
 
 **Atenção:** Para contas do Gmail, ative a configuração de aplicativos menos seguros ou utilize um token de autenticação.
 
@@ -132,23 +132,23 @@ PASSWORD=sua-senha-ou-token
 
 Ao executar o comando `npm run test`, você verá o seguinte relatório no terminal:
 
-```bash
-> cypress_with_email@1.0.0 test
-> cypress run && node sendReport.js
-
-...
-
-  Tests:        6
-  Passing:      6
-  Failing:      0
-  Pending:      0
-  Skipped:      0
-
-...
-
-Relatório convertido para PDF com sucesso: C:\cypress_with_email\cypress\reports\pdf\relatorio-cypress.pdf
-E-mail enviado com sucesso: 250 2.0.0 OK
-```
+   ```bash
+   > cypress_with_email@1.0.0 test
+   > cypress run && node sendReport.js
+   
+   ...
+   
+     Tests:        6
+     Passing:      6
+     Failing:      0
+     Pending:      0
+     Skipped:      0
+   
+   ...
+   
+   Relatório convertido para PDF com sucesso: C:\cypress_with_email\cypress\reports\pdf\relatorio-cypress.pdf
+   E-mail enviado com sucesso: 250 2.0.0 OK
+   ```
 
 ### Explicação do Relatório:
 
@@ -171,11 +171,9 @@ E-mail enviado com sucesso: 250 2.0.0 OK
 ## Scripts do repositório
 
 O arquivo `package.json` possui o seguinte script para rodar os testes e enviar relatórios automaticamente:
-```json
-"scripts": {
-    "test": "cypress run && node sendReport.js"
-}
-```
+   ```json
+   "scripts": { "test": "cypress run && node sendReport.js" }
+   ```
 
 ### Executar o script manualmente
 
@@ -190,34 +188,34 @@ O arquivo `package.json` possui o seguinte script para rodar os testes e enviar 
 
 Este repositório suporta integração contínua com GitHub Actions. Certifique-se de configurar um workflow para rodar os testes com o script acima. Um exemplo de configuração YAML:
 
-```yaml
-name: Run Cypress Tests
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  cypress-test:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run Cypress Tests and Send Report
-      run: |
-          node sendReport.js 
-```
+   ```yaml
+   name: Run Cypress Tests
+   
+   on:
+     push:
+       branches:
+         - main
+   
+   jobs:
+     cypress-test:
+       runs-on: ubuntu-latest
+   
+       steps:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+   
+       - name: Setup Node.js
+         uses: actions/setup-node@v3
+         with:
+           node-version: '16'
+   
+       - name: Install dependencies
+         run: npm install
+   
+       - name: Run Cypress Tests and Send Report
+         run: |
+             node sendReport.js 
+   ```
 
 ---
 
