@@ -7,6 +7,8 @@ Este repositório contém a configuração de testes automatizados com Cypress, 
 - [Pré-requisitos](#pré-requisitos)
 - [Como clonar o repositório](#como-clonar-o-repositório)
 - [Instalação do Cypress](#instalação-do-cypress)
+- [Instalação das bibliotecas](#instalação-das-bibliotecas)
+- [Caso de erro na instalação](#caso-de-erro-na-instalação)
 - [Funcionamento do `sendReport.js` e `.env`](#funcionamento-do-sendreportjs-e-env)
 - [Relatório de Execução](#relatório-de-execução)
 - [Scripts do repositório](#scripts-do-repositório)
@@ -51,6 +53,54 @@ Certifique-se de ter instalado:
 
 ---
 
+## Instalação das bibliotecas
+
+1. Biblioteca dotenv
+   ```bash
+   npm install dotenv
+   ```
+
+2. Biblioteca nodemailer
+   ```bashs
+   npm install nodemailer
+   ```
+   
+3. Biblioteca html-pdf-chrome
+   ```bash
+   npm install html-pdf-chrome
+   ```
+   
+4. Biblioteca puppeteer
+   ```bash
+   npm install puppeteer --save
+   ```
+   
+5. Biblioteca multi-reporters
+   ```bash
+   npm install --save-dev cypress-multi-reporters
+   ```
+   
+6. Biblioteca mochawesome-reporter
+   ```bash
+   npm install --save-dev cypress-mochawesome-reporter
+   ```
+
+7. Biblioteca mocha-junit-reporter
+   ```bash
+   npm install --save-dev mocha-junit-reporter
+   ```
+
+---
+
+## Caso de erro na instalação
+
+   - reforce a instalação com esse comando
+   ```bash
+   npm audit fix
+   ```
+
+---
+
 ## Funcionamento do `sendReport.js` e `.env`
 
 ### `sendReport.js`
@@ -69,10 +119,10 @@ Bibliotecas necessárias:
 ### Configuração do `.env`
 
 Crie um arquivo `.env` na raiz do projeto e adicione as seguintes variáveis:
-```env
-EMAIL=seu-email@gmail.com
-PASSWORD=sua-senha-ou-token
-```
+   ```env
+   EMAIL=seu-email@gmail.com
+   PASSWORD=sua-senha-ou-token
+   ```
 
 **Atenção:** Para contas do Gmail, ative a configuração de aplicativos menos seguros ou utilize um token de autenticação.
 
@@ -82,23 +132,23 @@ PASSWORD=sua-senha-ou-token
 
 Ao executar o comando `npm run test`, você verá o seguinte relatório no terminal:
 
-```bash
-> cypress_with_email@1.0.0 test
-> cypress run && node sendReport.js
-
-...
-
-  Tests:        6
-  Passing:      6
-  Failing:      0
-  Pending:      0
-  Skipped:      0
-
-...
-
-Relatório convertido para PDF com sucesso: C:\cypress_with_email\cypress\reports\pdf\relatorio-cypress.pdf
-E-mail enviado com sucesso: 250 2.0.0 OK
-```
+   ```bash
+   > cypress_with_email@1.0.0 test
+   > cypress run && node sendReport.js
+   
+   ...
+   
+     Tests:        6
+     Passing:      6
+     Failing:      0
+     Pending:      0
+     Skipped:      0
+   
+   ...
+   
+   Relatório convertido para PDF com sucesso: C:\cypress_with_email\cypress\reports\pdf\relatorio-cypress.pdf
+   E-mail enviado com sucesso: 250 2.0.0 OK
+   ```
 
 ### Explicação do Relatório:
 
@@ -121,11 +171,9 @@ E-mail enviado com sucesso: 250 2.0.0 OK
 ## Scripts do repositório
 
 O arquivo `package.json` possui o seguinte script para rodar os testes e enviar relatórios automaticamente:
-```json
-"scripts": {
-    "test": "cypress run && node sendReport.js"
-}
-```
+   ```json
+   "scripts": { "test": "cypress run && node sendReport.js" }
+   ```
 
 ### Executar o script manualmente
 
@@ -140,34 +188,34 @@ O arquivo `package.json` possui o seguinte script para rodar os testes e enviar 
 
 Este repositório suporta integração contínua com GitHub Actions. Certifique-se de configurar um workflow para rodar os testes com o script acima. Um exemplo de configuração YAML:
 
-```yaml
-name: Run Cypress Tests
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  cypress-test:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run Cypress Tests and Send Report
-      run: |
-          node sendReport.js 
-```
+   ```yaml
+   name: Run Cypress Tests
+   
+   on:
+     push:
+       branches:
+         - main
+   
+   jobs:
+     cypress-test:
+       runs-on: ubuntu-latest
+   
+       steps:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+   
+       - name: Setup Node.js
+         uses: actions/setup-node@v3
+         with:
+           node-version: '16'
+   
+       - name: Install dependencies
+         run: npm install
+   
+       - name: Run Cypress Tests and Send Report
+         run: |
+             node sendReport.js 
+   ```
 
 ---
 
