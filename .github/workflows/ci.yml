@@ -9,17 +9,20 @@ jobs:
   cypress-run:
     runs-on: ubuntu-22.04
     steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
     - name: Install Dependencies
       run: npm install
-    
+
     - name: Install Chromium
       run: |
         sudo apt update
         sudo apt install -y chromium-browser
-    
+
     - name: Run Cypress Tests
       run: npx cypress run
-    
+
     - name: Run Report Script
       run: node sendReport.js
 
@@ -36,7 +39,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: cypress-run
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
         
       - name: Run Send Report
