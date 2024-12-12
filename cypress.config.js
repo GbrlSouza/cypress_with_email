@@ -19,6 +19,7 @@ module.exports = defineConfig({
 
   e2e: {
     video: true,
+    videosFolder: 'cypress/videos',
     setupNodeEvents(on, config) { require('cypress-mochawesome-reporter/plugin')(on) },
   },
 })
