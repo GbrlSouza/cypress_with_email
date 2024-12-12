@@ -8,23 +8,24 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install Dependencies
         run: npm install
-
       - name: Fix Cypress Permissions
         run: chmod +x ./node_modules/.bin/cypress
-
       - name: Install Cypress
         run: npx cypress install
-
       - name: Run Cypress Tests
         run: npx cypress run
 
+  send-report-test:
+    runs-on: ubuntu-22.04
+    needs: cypress-run
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Run Send Report
         run: |
           if [ $? -ne 0 ]; then
