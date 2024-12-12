@@ -27,10 +27,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Send Report
-        run: |
-          if [ $? -ne 0 ]; then
-            echo "Testes falharam. Enviando relatório..."
-            node sendReport.js
-          else
-            echo "Todos os testes passaram. Não será enviado relatório."
-          fi
+        run: node sendReport.js
