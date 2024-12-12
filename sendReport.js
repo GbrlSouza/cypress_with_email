@@ -12,12 +12,17 @@ async function ensureDirectoryExists(directoryPath) {
   try {
     await fs.promises.mkdir(directoryPath, { recursive: true })
     console.warn(`Diretório criado ou já existe: ${directoryPath}`)
-  } catch (error) { console.error('Erro ao criar diretório:', error) }
+  } catch (error) {
+    console.error('Erro ao criar diretório:', error)
+  }
 }
 
 async function captureScreenshot(url, outputPath) {
   try {
-    const browser = await puppeteer.launch({ headless: true })
+    const browser = await puppeteer.launch({
+      headless: true,
+      executablePath: '/usr/bin/chromium-browser', // Ajuste conforme o ambiente
+    })
     const page = await browser.newPage()
 
     await page.goto(`file://${url}`, { waitUntil: 'networkidle2' })
@@ -25,20 +30,27 @@ async function captureScreenshot(url, outputPath) {
 
     await browser.close()
     console.debug('Screenshot capturada com sucesso:', outputPath)
-  } catch (error) { console.error('Erro ao capturar screenshot:', error) }
+  } catch (error) {
+    console.error('Erro ao capturar screenshot:', error)
+  }
 }
 
 function findVideoFileDynamically(videoDir) {
   try {
+    if (!fs.existsSync(videoDir)) {
+      console.warn('Diretório de vídeos não existe:', videoDir)
+      return null
+    }
+
     const directories = fs.readdirSync(videoDir, { withFileTypes: true })
     for (const dir of directories) {
-      if (dir.isDirectory()) { 
-        const subDirPath = path.join(videoDir, dir.name) 
-        const files = fs.readdirSync(subDirPath) 
-        const videoFile = files.find(file => file.endsWith('.mp4')) 
+      if (dir.isDirectory()) {
+        const subDirPath = path.join(videoDir, dir.name)
+        const files = fs.readdirSync(subDirPath)
+        const videoFile = files.find(file => file.endsWith('.mp4'))
         if (videoFile) {
           console.debug(`Vídeo encontrado: ${videoFile} em ${subDirPath}`)
-          return path.join(subDirPath, videoFile) 
+          return path.join(subDirPath, videoFile)
         }
       }
     }
@@ -71,8 +83,12 @@ async function sendEmailWithAttachment(pdfPath, screenshotPath, videoPath) {
         filename: 'video.mp4',
         path: videoPath,
       })
-    } else { console.warn('O tamanho total dos anexos excede 20MB, vídeo não será anexado.') }
-  } else { console.warn(`Arquivo de vídeo não encontrado ou inválido: ${videoPath}`) }
+    } else {
+      console.warn('O tamanho total dos anexos excede 20MB, vídeo não será anexado.')
+    }
+  } else {
+    console.warn(`Arquivo de vídeo não encontrado ou inválido: ${videoPath}`)
+  }
 
   const mailOptions = {
     from: process.env.EMAIL,
@@ -85,11 +101,18 @@ async function sendEmailWithAttachment(pdfPath, screenshotPath, videoPath) {
   try {
     const info = await transporter.sendMail(mailOptions)
     console.debug('E-mail enviado com sucesso:', info.response)
-  } catch (error) { console.error('Erro ao enviar o e-mail:', error) }
+  } catch (error) {
+    console.error('Erro ao enviar o e-mail:', error)
+  }
 }
 
 async function convertHtmlToPdf(htmlFilePath, outputPdfPath) {
   try {
+    if (!fs.existsSync(htmlFilePath)) {
+      console.error('Erro: Arquivo HTML não encontrado:', htmlFilePath)
+      return
+    }
+
     const htmlContent = await fs.promises.readFile(htmlFilePath, 'utf-8')
 
     const options = {
@@ -107,10 +130,12 @@ async function convertHtmlToPdf(htmlFilePath, outputPdfPath) {
     }
 
     const pdf = await create(htmlContent, options)
-    await new Promise((resolve) => setTimeout(resolve, 5000))
+    await new Promise(resolve => setTimeout(resolve, 5000))
     await pdf.toFile(outputPdfPath)
     console.debug('Relatório convertido para PDF com sucesso:', outputPdfPath)
-  } catch (error) { console.error('Erro ao gerar o PDF:', error) }
+  } catch (error) {
+    console.error('Erro ao gerar o PDF:', error)
+  }
 }
 
 async function calculateTotalAttachmentSize(attachments) {
@@ -120,7 +145,9 @@ async function calculateTotalAttachmentSize(attachments) {
     try {
       const stats = await fs.promises.stat(attachment.path)
       totalSize += stats.size
-    } catch (error) { console.error('Erro ao calcular o tamanho do anexo:', error) }
+    } catch (error) {
+      console.error('Erro ao calcular o tamanho do anexo:', error)
+    }
   }
 
   return totalSize
@@ -144,15 +171,19 @@ const videoDir = path.join('cypress/videos')
 const screenshotPath = path.join(pdfDir, 'relatorio-cypress.png')
 
 ensureDirectoryExists(pdfDir).then(async () => {
-  await convertHtmlToPdf(reportPath, pdfPath)
-  await captureScreenshot(reportPath, screenshotPath)
+  try {
+    await convertHtmlToPdf(reportPath, pdfPath)
+    await captureScreenshot(reportPath, screenshotPath)
 
-  const videoPath = findVideoFileDynamically(videoDir)
+    const videoPath = findVideoFileDynamically(videoDir)
 
-  if (!fs.existsSync(pdfPath)) {
-    console.error('Erro: O arquivo PDF não foi gerado corretamente.')
-    return
+    if (!fs.existsSync(pdfPath)) {
+      console.error('Erro: O arquivo PDF não foi gerado corretamente.')
+      return
+    }
+
+    await sendEmailWithAttachment(pdfPath, screenshotPath, videoPath)
+  } catch (error) {
+    console.error('Erro durante o processamento:', error)
   }
-
-  await sendEmailWithAttachment(pdfPath, screenshotPath, videoPath)
 })
