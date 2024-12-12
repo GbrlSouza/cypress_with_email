@@ -9,16 +9,28 @@ jobs:
   cypress-run:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install Dependencies
-        run: npm install
-      - name: Fix Cypress Permissions
-        run: chmod +x ./node_modules/.bin/cypress
-      - name: Install Cypress
-        run: npx cypress install
-      - name: Run Cypress Tests
-        run: npx cypress run
+    - name: Install Dependencies
+      run: npm install
+    
+    - name: Install Chromium
+      run: |
+        sudo apt update
+        sudo apt install -y chromium-browser
+    
+    - name: Run Cypress Tests
+      run: npx cypress run
+    
+    - name: Run Report Script
+      run: node sendReport.js
+
+    - name: Upload Cypress Artifacts (screenshots, videos, and reports)
+      uses: actions/upload-artifact@v3
+      with:
+        name: cypress-artifacts
+        path: |
+          cypress/videos/*
+          cypress/reports/pdf/*
+          cypress/screenshots/entidade.cy.js/*
 
   send-report-test:
     runs-on: ubuntu-22.04
@@ -26,5 +38,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
       - name: Run Send Report
         run: node sendReport.js
