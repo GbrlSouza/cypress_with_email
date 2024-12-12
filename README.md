@@ -213,8 +213,7 @@ Este repositório suporta integração contínua com GitHub Actions. Certifique-
          run: npm install
    
        - name: Run Cypress Tests and Send Report
-         run: |
-             node sendReport.js 
+         run: node sendReport.js 
    ```
 
 ---
