@@ -117,6 +117,7 @@ async function convertHtmlToPdf(htmlFilePath, outputPdfPath) {
     }
 
     const pdf = await create(htmlContent, options)
+    await new Promise((resolve) => setTimeout(resolve, 5000))
     await pdf.toFile(outputPdfPath)
     console.debug('Relatório convertido para PDF com sucesso:', outputPdfPath)
   } catch (error) { console.error('Erro ao gerar o PDF:', error) }
