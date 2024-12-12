@@ -88,16 +88,6 @@ async function sendEmailWithAttachment(pdfPath, screenshotPath, videoPath) {
   } catch (error) { console.error('Erro ao enviar o e-mail:', error) }
 }
 
-async function checkCypressReportForErrors(htmlFilePath) {
-  try {
-    const htmlContent = await fs.promises.readFile(htmlFilePath, 'utf-8')
-    return htmlContent.includes('failed')
-  } catch (error) {
-    console.error('Erro ao ler o relatório do Cypress:', error)
-    return false
-  }
-}
-
 async function convertHtmlToPdf(htmlFilePath, outputPdfPath) {
   try {
     const htmlContent = await fs.promises.readFile(htmlFilePath, 'utf-8')
@@ -154,19 +144,15 @@ const videoDir = path.join('cypress/videos')
 const screenshotPath = path.join(pdfDir, 'relatorio-cypress.png')
 
 ensureDirectoryExists(pdfDir).then(async () => {
-  const hasErrors = await checkCypressReportForErrors(reportPath)
+  await convertHtmlToPdf(reportPath, pdfPath)
+  await captureScreenshot(reportPath, screenshotPath)
 
-  if (hasErrors) {
-    await convertHtmlToPdf(reportPath, pdfPath)
-    await captureScreenshot(reportPath, screenshotPath)
+  const videoPath = findVideoFileDynamically(videoDir)
 
-    const videoPath = findVideoFileDynamically(videoDir)
+  if (!fs.existsSync(pdfPath)) {
+    console.error('Erro: O arquivo PDF não foi gerado corretamente.')
+    return
+  }
 
-    if (!fs.existsSync(pdfPath)) {
-      console.error('Erro: O arquivo PDF não foi gerado corretamente.')
-      return
-    }
-
-    await sendEmailWithAttachment(pdfPath, screenshotPath, videoPath)
-  } else { console.info('Nenhum erro encontrado nos testes do Cypress. Nenhum e-mail enviado.') }
+  await sendEmailWithAttachment(pdfPath, screenshotPath, videoPath)
 })
