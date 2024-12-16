@@ -27,9 +27,6 @@ jobs:
     - name: Run Cypress Tests
       run: npx cypress run
 
-    - name: Run Report Script
-      run: node sendReport.js
-
     - name: Upload Cypress Artifacts
       uses: actions/upload-artifact@v3
       with:
