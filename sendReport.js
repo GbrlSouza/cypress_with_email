@@ -92,7 +92,7 @@ async function sendEmailWithAttachment(pdfPath, screenshotPath, videoPath) {
 
   const mailOptions = {
     from: process.env.EMAIL,
-    to: 'dev.gabrielsouza@hotmail.com',
+    to: process.env.RECIPIENT,
     subject: 'Relatório de Testes Cypress no NXLITE',
     html: '<h3>Segue o relatório de testes do Cypress</h3>',
     attachments,
