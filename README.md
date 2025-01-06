@@ -95,6 +95,11 @@ Certifique-se de ter instalado:
    npx puppeteer browsers install chrome
    ```
 
+9. Biblioteca puppeteer archiver
+   ```bash
+   npm install dotenv nodemailer puppeteer archiver
+   ```
+
 ---
 
 ## Caso de erro na instalação
