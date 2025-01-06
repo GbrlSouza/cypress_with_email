@@ -100,6 +100,11 @@ Certifique-se de ter instalado:
    npm install dotenv nodemailer puppeteer archiver
    ```
 
+10. Biblioteca cheerio
+```bash
+npm install cheerio
+```
+
 ---
 
 ## Caso de erro na instalação
