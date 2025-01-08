@@ -101,9 +101,9 @@ Certifique-se de ter instalado:
    ```
 
 10. Biblioteca cheerio
-```bash
-npm install cheerio
-```
+   ```bash
+   npm install cheerio
+   ```
 
 ---
 
