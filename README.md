@@ -123,14 +123,6 @@ Certifique-se de ter instalado:
 
 ---
 
-## Como clonar o repositório
-
-<video controls>
-  <source src="cypress_with_email/aula.mp4" type="video/mp4">
-</video>
-
----
-
 ## Funcionamento do `sendReport.js` e `.env`
 
 ### `sendReport.js`
