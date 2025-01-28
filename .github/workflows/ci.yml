@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - main
+      
   schedule:
     - cron: '0 5 * * *'
 
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
+    
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -43,6 +45,7 @@ jobs:
 
     runs-on: ubuntu-22.04
     needs: cypress-run
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
