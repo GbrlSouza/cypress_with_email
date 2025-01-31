@@ -121,6 +121,13 @@ Certifique-se de ter instalado:
    sudo apt-get install -y libx11-xcb-dev libgconf-2-4 libnss3 libatk-bridge2.0-0 libatk1.0-0 libcups2 libxcomposite1 libxrandr2 libgbm1 libasound2
    ```
 
+### Limpeza de cache
+
+   ```bash
+   rm -rf node_modules/.cache/cypress
+   npm cache clean --force
+   ```
+
 ---
 
 ## Funcionamento do `sendReport.js` e `.env`
