@@ -127,6 +127,12 @@ Certifique-se de ter instalado:
    rm -rf node_modules/.cache/cypress
    npm cache clean --force
    ```
+   
+   ou
+
+   ```bash
+   npx cypress cache clear
+   ```
 
 ---
 
