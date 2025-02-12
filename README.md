@@ -101,9 +101,9 @@ Certifique-se de ter instalado:
    ```
 
 10. Biblioteca cheerio
-   ```bash
-   npm install cheerio
-   ```
+      ```bash
+      npm install cheerio
+      ```
 
 ---
 
@@ -132,6 +132,7 @@ Certifique-se de ter instalado:
 
    ```bash
    npx cypress cache clear
+   npx cypress install
    ```
 
 ---
